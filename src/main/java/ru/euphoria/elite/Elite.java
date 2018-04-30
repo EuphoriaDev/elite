@@ -1,15 +1,13 @@
 package ru.euphoria.elite;
 
-import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.Objects;
 
 /**
- * Created by admin on 28.04.18.
+ * ORM like database for android.
  */
-
 public class Elite {
     private static SQLiteOpenHelper instance;
 
@@ -18,6 +16,10 @@ public class Elite {
         return instance.getWritableDatabase();
     }
 
+    /**
+     * Initializes the database by specified {@link SQLiteOpenHelper}
+     * @param helper database helper for init
+     */
     public static SQLiteOpenHelper setInstance(SQLiteOpenHelper helper) {
         if (instance == null) {
             synchronized (SQLiteOpenHelper.class) {
@@ -27,6 +29,13 @@ public class Elite {
             }
         }
         return instance;
+    }
+
+    /** Releases any open database object */
+    public static void close() {
+        if (instance != null) {
+            instance.close();
+        }
     }
 
     private static void checkNull() {

@@ -3,6 +3,7 @@ package ru.euphoria.elite;
 import java.lang.reflect.Field;
 
 import ru.euphoria.elite.annotation.PrimaryKey;
+import ru.euphoria.elite.annotation.Serialize;
 
 /**
  * Created by admin on 30.03.18.
@@ -23,6 +24,7 @@ public class Tables {
         Structure structure = Structure.getStructure(aClass);
         for (Field f : structure.fields) {
             boolean primaryKey = f.isAnnotationPresent(PrimaryKey.class);
+            boolean serialize = f.isAnnotationPresent(Serialize.class);
             String type = f.getType().getSimpleName();
             String name = f.getName();
 
@@ -35,6 +37,8 @@ public class Tables {
                 case "int": sql.append(" INTEGER"); break;
                 case "double": sql.append(" REAL"); break;
                 case "String": sql.append(" TEXT"); break;
+
+                default: if (serialize) sql.append(" BLOB ");
             }
             if (primaryKey) {
                 sql.append(" PRIMARY KEY NOT NULL");

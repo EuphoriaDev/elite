@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import ru.euphoria.elite.annotation.IgnoreColumn;
+import ru.euphoria.elite.annotation.Serialize;
 import ru.euphoria.elite.util.PrimaryKeyComparator;
 
 public class Structure {
@@ -35,9 +36,13 @@ public class Structure {
             f.setAccessible(true);
             boolean ignore = f.isAnnotationPresent(IgnoreColumn.class);
             int modifiers = f.getModifiers();
-            if (ignore || Modifier.isStatic(modifiers) || Modifier.isAbstract(modifiers)) {
+            if (ignore
+                    || Modifier.isStatic(modifiers)
+                    || Modifier.isPrivate(modifiers)
+                    || Modifier.isAbstract(modifiers)) {
                 continue;
             }
+            f.isAnnotationPresent(Serialize.class);
 
             String type = f.getType().getSimpleName();
             structure.fields.add(f);

@@ -1,5 +1,6 @@
 package ru.euphoria.elite;
 
+import android.database.Cursor;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
@@ -74,8 +75,13 @@ public class QueryBuilder<T> {
         return this;
     }
 
+    /** Execute a single SQL statement */
     public void execute() {
         Elite.database().execSQL(build());
+    }
+
+    public Cursor cursor() {
+        return Elite.database().rawQuery(build(), null);
     }
 
     public ArrayList<T> values() {

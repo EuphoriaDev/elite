@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ru.euphoria.elite.annotation.Serialize;
+import ru.euphoria.elite.util.BlobUtils;
+
 /**
  * Created by admin on 29.03.18.
  */
@@ -58,6 +61,11 @@ public class ValueStore {
                 case "String":
                     field.set(object, cursor.getString(i));
                     break;
+
+                    default: if (field.isAnnotationPresent(Serialize.class)) {
+                        Object deserialize = BlobUtils.deserialize(cursor.getBlob(i));
+                        field.set(object, deserialize);
+                    }
             }
         }
         return object;
@@ -102,6 +110,10 @@ public class ValueStore {
                         case "int": statement.bindLong(index, field.getInt(object)); break;
                         case "long": statement.bindLong(index, field.getLong(object)); break;
                         case "double": statement.bindDouble(index, field.getDouble(object)); break;
+
+                        default: if (field.isAnnotationPresent(Serialize.class)) {
+                            statement.bindBlob(index, BlobUtils.serialize(object));
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

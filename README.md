@@ -14,10 +14,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public DatabaseHelper(Context context) {
         this(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
-
-    public DatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
-    }
 }
 ```
 
