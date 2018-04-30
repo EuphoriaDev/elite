@@ -98,10 +98,20 @@ ArrayList<User> moscowUsers = QueryBuilder.select(Person.class)
 String sql = QueryBuilder.select(Person.class).build();
 
 // just sql: SELECT * FROM users;
-String sql = QueryBuilder.select(User.class).build();
-Cursor cursor = Elite.database().rawQuery(sql, null);
+Cursor cursor = QueryBuilder.select(User.class).cursor();
 // do something
 cursor.close();
 ```
 
-# TODO: Supplement documentation and sleep
+# Insert/update values
+For insert items you should use ```ValueStore```. Iinsertion occurs with the transaction to get hight performance.
+
+```java
+// insert one row
+Person p = new Person(1, "Your Name", 20);
+ValueStore.insert(p);
+
+// insert more items
+ArrayList<Person> items = ...;
+ValueStore.insert(items);
+```
