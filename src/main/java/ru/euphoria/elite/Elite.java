@@ -9,6 +9,7 @@ import java.util.Objects;
  * ORM like database for android.
  */
 public class Elite {
+    static final boolean DEBUG = false;
     private static SQLiteOpenHelper instance;
 
     /** Returns a database that will be used for reading and writing */

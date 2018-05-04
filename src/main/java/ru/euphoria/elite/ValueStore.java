@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 import ru.euphoria.elite.annotation.Serialize;
+import ru.euphoria.elite.annotation.TypeSerializer;
 import ru.euphoria.elite.util.BlobUtils;
 
 /**
@@ -43,8 +44,9 @@ public class ValueStore {
         E object = constructor.newInstance();
         for (int i = 0; i < structure.fields.size(); i++) {
             Field field = structure.fields.get(i);
-
             String type = structure.types.get(i);
+            boolean serialize = structure.serialize.get(i);
+
             switch (type) {
                 case "boolean":
                     field.setBoolean(object, cursor.getInt(i) == 1);
@@ -62,9 +64,15 @@ public class ValueStore {
                     field.set(object, cursor.getString(i));
                     break;
 
-                    default: if (field.isAnnotationPresent(Serialize.class)) {
-                        Object deserialize = BlobUtils.deserialize(cursor.getBlob(i));
-                        field.set(object, deserialize);
+                    default: {
+                        if (!serialize) break;
+
+                        switch (cursor.getType(i)) {
+                            case Cursor.FIELD_TYPE_STRING:
+                                TypeSerializer serializer = structure.serializers.get(i);
+                                field.set(object, serializer.deserialize(cursor.getString(i)));
+                                break;
+                        }
                     }
             }
         }
@@ -101,19 +109,22 @@ public class ValueStore {
             for (int j = 0; j < structure.fields.size(); j++) {
                 Field field = structure.fields.get(j);
                 String type = structure.types.get(j);
+                boolean serialize = structure.serialize.get(j);
 
                 try {
+                    Object s = null;
+                    if (serialize) {
+                        s = structure.serializers.get(j).serialize(field.get(object));
+                        type = s.getClass().getSimpleName();
+                    }
+
                     int index = j + 1;
                     switch (type) {
-                        case "String": statement.bindString(index, String.valueOf(field.get(object))); break;
+                        case "String": statement.bindString(index, String.valueOf(s != null ? s : field.get(object))); break;
                         case "boolean": statement.bindLong(index, field.getBoolean(object) ? 1 : 0); break;
                         case "int": statement.bindLong(index, field.getInt(object)); break;
                         case "long": statement.bindLong(index, field.getLong(object)); break;
                         case "double": statement.bindDouble(index, field.getDouble(object)); break;
-
-                        default: if (field.isAnnotationPresent(Serialize.class)) {
-                            statement.bindBlob(index, BlobUtils.serialize(object));
-                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

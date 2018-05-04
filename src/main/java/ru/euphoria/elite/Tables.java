@@ -1,5 +1,7 @@
 package ru.euphoria.elite;
 
+import android.util.Log;
+
 import java.lang.reflect.Field;
 
 import ru.euphoria.elite.annotation.PrimaryKey;
@@ -10,6 +12,8 @@ import ru.euphoria.elite.annotation.Serialize;
  */
 
 public class Tables {
+    private static final String LOG_TAG = "ELite.Tables";
+    private static final boolean DEBUG = Elite.DEBUG;
 
     public static String drop(Class<?> aClass) {
         return "DROP TABLE IF EXISTS " + getTableName(aClass);
@@ -24,7 +28,6 @@ public class Tables {
         Structure structure = Structure.getStructure(aClass);
         for (Field f : structure.fields) {
             boolean primaryKey = f.isAnnotationPresent(PrimaryKey.class);
-            boolean serialize = f.isAnnotationPresent(Serialize.class);
             String type = f.getType().getSimpleName();
             String name = f.getName();
 
@@ -38,7 +41,7 @@ public class Tables {
                 case "double": sql.append(" REAL"); break;
                 case "String": sql.append(" TEXT"); break;
 
-                default: if (serialize) sql.append(" BLOB ");
+                default: sql.append(" TEXT");
             }
             if (primaryKey) {
                 sql.append(" PRIMARY KEY NOT NULL");
@@ -47,6 +50,10 @@ public class Tables {
         }
         sql.delete(sql.length() - 2, sql.length() - 1);
         sql.append(");");
+
+        if (DEBUG) {
+            Log.i(LOG_TAG, sql.toString());
+        }
         return sql.toString();
     }
 

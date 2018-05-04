@@ -8,6 +8,7 @@ import java.util.List;
 
 import ru.euphoria.elite.annotation.IgnoreColumn;
 import ru.euphoria.elite.annotation.Serialize;
+import ru.euphoria.elite.annotation.TypeSerializer;
 import ru.euphoria.elite.util.PrimaryKeyComparator;
 
 public class Structure {
@@ -15,11 +16,15 @@ public class Structure {
     public ArrayList<String> names;
     public ArrayList<Field> fields;
     public ArrayList<String> types;
+    public ArrayList<Boolean> serialize;
+    public ArrayList<TypeSerializer> serializers;
 
     public Structure() {
         this.fields = new ArrayList<>();
         this.types = new ArrayList<>();
         this.names = new ArrayList<>();
+        this.serialize = new ArrayList<>();
+        this.serializers = new ArrayList<>();
     }
 
     public static Structure getStructure(List<?> values) {
@@ -42,7 +47,16 @@ public class Structure {
                     || Modifier.isAbstract(modifiers)) {
                 continue;
             }
-            f.isAnnotationPresent(Serialize.class);
+
+            boolean present = f.isAnnotationPresent(Serialize.class);
+            structure.serialize.add(present);
+            try {
+                structure.serializers.add(present
+                        ? f.getAnnotation(Serialize.class).value().newInstance()
+                        : null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             String type = f.getType().getSimpleName();
             structure.fields.add(f);
