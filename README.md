@@ -5,9 +5,6 @@ ORM like database for android by Euphoria with <b>high performance</b> and <b>lo
 First, you should create extended class SQLiteOpenHelper:
 ```java
 public class DatabaseHelper extends SQLiteOpenHelper {
-    private static DatabaseHelper instance;
-    
-    // sqlite filename and version
     private static final String DATABASE_NAME = "cache.db";
     private static final int DATABASE_VERSION = 1;
 
@@ -20,16 +17,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 and initialize this class in your app using ```Elite.setInstance```
 ```java
 public class YourApplication extends Application {
-    public static volatile Context context;
     // ...
 
     @Override
     public void onCreate() {
         super.onCreate();
-        context = this;
-        
+      
         // init database your database
-        Elite.setInstance(new DatabaseHelper(content));
+        Elite.setInstance(new DatabaseHelper(this));
     }
 }
 ```
