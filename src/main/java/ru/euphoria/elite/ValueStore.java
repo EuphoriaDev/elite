@@ -12,7 +12,6 @@ import java.util.List;
 
 import ru.euphoria.elite.annotation.Serialize;
 import ru.euphoria.elite.annotation.TypeSerializer;
-import ru.euphoria.elite.util.BlobUtils;
 
 /**
  * Created by admin on 29.03.18.

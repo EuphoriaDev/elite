@@ -44,7 +44,12 @@ public class Tables {
                 default: sql.append(" TEXT");
             }
             if (primaryKey) {
-                sql.append(" PRIMARY KEY NOT NULL");
+                PrimaryKey key = f.getAnnotation(PrimaryKey.class);
+                if (key.autoincrement()) {
+                    sql.append(" PRIMARY KEY AUTOINCREMENT NOT NULL");
+                } else {
+                    sql.append(" PRIMARY KEY NOT NULL");
+                }
             }
             sql.append(", ");
         }

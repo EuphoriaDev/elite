@@ -88,6 +88,10 @@ public class QueryBuilder<T> {
         return ValueStore.fetch(build(), aClass);
     }
 
+    public T single() {
+        return values().size() > 0 ? values().get(0) : null;
+    }
+
     public String build() {
         StringBuilder builder = new StringBuilder();
         switch (operator) {
