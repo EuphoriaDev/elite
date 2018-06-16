@@ -89,7 +89,7 @@ public class QueryBuilder<T> {
     }
 
     public T single() {
-        return values().size() > 0 ? values().get(0) : null;
+        return !values().isEmpty() ? values().get(0) : null;
     }
 
     public String build() {

@@ -96,10 +96,12 @@ public class ValueStore {
         SQLiteStatement statement = compileStatement(db, structure);
 
         db.beginTransaction();
-        bindValues(structure, statement, values);
-        db.setTransactionSuccessful();
-        db.endTransaction();
-
+        try {
+            bindValues(structure, statement, values);
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
     }
 
     private static void bindValues(Structure structure, SQLiteStatement statement, List<?> values) {
