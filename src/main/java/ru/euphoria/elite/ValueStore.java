@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import ru.euphoria.elite.annotation.Serialize;
 import ru.euphoria.elite.annotation.TypeSerializer;
 
 /**
@@ -87,7 +86,9 @@ public class ValueStore {
     }
 
     public static void insert(Object value) {
-        insert(Collections.singletonList(value));
+        if (value != null) {
+            insert(Collections.singletonList(value));
+        }
     }
 
     public static void insert(List<?> values) {

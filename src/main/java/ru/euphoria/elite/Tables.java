@@ -5,7 +5,7 @@ import android.util.Log;
 import java.lang.reflect.Field;
 
 import ru.euphoria.elite.annotation.PrimaryKey;
-import ru.euphoria.elite.annotation.Serialize;
+import ru.euphoria.elite.annotation.Table;
 
 /**
  * Created by admin on 30.03.18.
@@ -63,6 +63,10 @@ public class Tables {
     }
 
     public static String getTableName(Class aClass) {
+        if (aClass.isAnnotationPresent(Table.class)) {
+            return ((Table) aClass.getAnnotation(Table.class)).value();
+        }
+
         String simpleName = aClass.getSimpleName();
 
         int index;
