@@ -1,6 +1,8 @@
 # Elite
 ORM like database for android by Euphoria with <b>high performance</b> and <b>low memory</b> usage.
 
+<b>[DEPRECATED]: Use [Room Persistence Library](https://developer.android.com/topic/libraries/architecture/room)</b>
+
 # Getting started
 First, you should create extended class SQLiteOpenHelper:
 ```java
